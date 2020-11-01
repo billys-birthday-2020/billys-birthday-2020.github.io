@@ -4,9 +4,20 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Birthday Instructions</title>
-        <link href="https://fonts.googleapis.com/css2?family=Delius&family=Sacramento&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Delius&family=Emilys+Candy&display=swap" rel="stylesheet">
         <script src="https://unpkg.com/vue"></script>
         <style>
+            /* Change these things: */
+            :root {
+                --font-for-names: "Emilys Candy";
+                --font-for-instructions: "Delius";
+                --front-background-image: url("front-background.jpg");
+                --front-font-color: white;
+                --back-background-image: url("front-background.jpg");
+                --back-font-color: white;
+            }
+
+            /* Don't worry about changing any of these styles below */
             *, *::after, *::before {
                 box-sizing: border-box;
             }
@@ -17,9 +28,8 @@
             }
             body {
                 background: #E8ECF7;
-                /* background: red; */
                 color: #292E3B;
-                font-family: "Delius", sans-serif;
+                font-family: var(--font-for-instructions), sans-serif;
                 overflow-x: hidden;
             }
             #main {
@@ -29,7 +39,7 @@
                 margin-top: 0;
             }
             h1 {
-                font-family: "Sacramento", serif;
+                font-family: var(--font-for-names), serif;
                 font-weight: 400;
             }
             ul, ol{
@@ -76,10 +86,11 @@
                 margin-left: 1rem;
             }
             hr {
-                background: rgba(16, 29, 65, 0.25);
+                background: currentColor;
                 border: 0;
                 height: 1px;
                 margin: 1.25rem 0;
+                opacity: 0.5;
                 outline: 0;
             }
             .person-picker {
@@ -139,12 +150,10 @@
             .card-front {
                 align-items: center;
                 background: #FFCCCC;
-                /* CHNAGE THIS FOR BACKGROUND THING */
-                background-image: url('https://i.imgur.com/iAv6r91.jpg');
+                background-image: var(--front-background-image);
                 background-size: cover;
                 background-position: center center;
-                /* THIS CHANGES THE TEXT COLOR */
-                color: white;
+                color: var(--front-font-color);
                 display: flex;
                 justify-content: center;
                 transform: translate(-50%, -50%) rotate3d(0, 1, 0, 0deg);
@@ -153,6 +162,11 @@
                 transform: translate(-50%, -50%) rotate3d(0, 1, 0, -180deg);
             }
             .card-back {
+                background: #FFCCCC;
+                background-image: var(--back-background-image);
+                background-size: cover;
+                background-position: center center;
+                color: var(--back-font-color);
                 display: flex;
                 flex-direction: column;
                 font-size: 0.875rem;
@@ -168,14 +182,14 @@
                 text-align: center;
             }
             .card-title {
-                border-bottom: 1px solid rgba(16, 29, 65, 0.25);
+                border-bottom: 1px solid currentColor;
                 flex: 0 0 auto;
                 font-weight: 400;
                 margin: 0;
                 padding: 0 0 0.5em;
             }
             .instructions {
-                border-bottom: 1px solid rgba(16, 29, 65, 0.25);
+                border-bottom: 1px solid currentColor;
                 flex: 1 1 auto;
                 overflow-y: auto;
                 padding: 1rem 0 1rem 1.75rem;
