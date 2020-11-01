@@ -194,6 +194,9 @@
             .hover-to-see {
                 display: none;
             }
+            .card-flip-trigger {
+                display: none;
+            }
             @media screen and (min-width: 24rem) {
                 .card-container {
                     padding: 1em 1em 24em;
@@ -205,14 +208,14 @@
                 .person-picker {
                     font-size: 1rem;
                 }
-                .card-container:hover .card-front {
+                .card-flip-trigger:hover ~ .card-front {
                     transform: translate(-50%, -50%) rotate3d(0, 1, 0, -180deg);
                 }
-                .card-container.is-flipped:hover .card-front,
-                .card-container:hover .card-back {
+                .card-container.is-flipped .card-flip-trigger:hover ~ .card-front,
+                .card-flip-trigger:hover ~ .card-back {
                     transform: translate(-50%, -50%) rotate3d(0, 1, 0, 0deg);
                 }
-                .card-container.is-flipped:hover .card-back {
+                .card-container.is-flipped .card-flip-trigger:hover ~ .card-back {
                     transform: translate(-50%, -50%) rotate3d(0, 1, 0, 180deg);
                 }
                 .flippy-flip button {
@@ -221,6 +224,18 @@
                 .hover-to-see {
                     display: block;
                     padding-bottom: 1rem;
+                }
+                .card-flip-trigger {
+                    content: "";
+                    display: block;
+                    height: 24rem;
+                    left: 50%;
+                    max-width: 95%;
+                    position: absolute;
+                    top: 50%;
+                    transform: translate(-50%, -50%);
+                    width: 36em;
+                    z-index: 3;
                 }
             }
         </style>
@@ -238,6 +253,7 @@
                 <button v-on:click="showInstructions" :disabled="personIsEmpty">Continue</button>
             </div>
             <div class="card-container" v-bind:class="{'is-flipped': cardIsFlippyFlipped}">
+                <div class="card-flip-trigger"></div>
                 <div class="card card-front">
                     <h1 class="card-name">{{ guests[currentPerson].name }}</h1>
                 </div>
@@ -276,53 +292,20 @@
             var main = new Vue({
                 el: '#main',
                 data: {
-                    currentPerson: 0,
-                    currentInstructions: [
-                        "Step number 1 (for the money)",
-                        "Step two (for the show)",
-                        "Step numero tres",
-                        "And this one's number 4",
-                        "#5",
-                        "Roman numeral VI",
-                        "Lucky step 7",
-                        "Step 8, don't hate...",
-                        "Step number 9 = u fine"
-                    ],
                     guests: [
+                        // START OF GUEST
                         {
-                            name: "John Doe",
+                            name: "Firstname Lastname",
                             instructions: [
-                                "John's first step goes here.",
+                                "First step goes here.",
                                 "2nd step here.",
                                 "Etc..."
                             ]
                         },
-                        {
-                            name: "Jane Smith",
-                            instructions: [
-                                "Jane's first step goes here.",
-                                "2nd step here.",
-                                "Etc..."
-                            ]
-                        },
-                        {
-                            name:"LuluBird",
-                            instructions: [
-                            "LULU WANT PERCH",
-                            "NANCYFANCY",
-                            ]
-                            
-                        },
-                        {
-                            name:"Emily",
-                            instructions: [
-                            "Cause Problems",
-                            "HONK",
-                            "Make noises",
-                            ]
-                            
-                        },
+                        // END OF GUEST
                     ],
+                    currentPerson: 0,
+                    currentInstructions: [],
                     modalHidden: false,
                     cardIsFlippyFlipped: false
                 },
