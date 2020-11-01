@@ -252,18 +252,6 @@
                 <hr />
                 <button v-on:click="showInstructions" :disabled="personIsEmpty">Continue</button>
             </div>
-            <div class="card-container" v-bind:class="{'is-flipped': cardIsFlippyFlipped}">
-                <div class="card-flip-trigger"></div>
-                <div class="card card-front">
-                    <h1 class="card-name">{{ guests[currentPerson].name }}</h1>
-                </div>
-                <div class="card card-back">
-                    <h2 class="card-title">Your Instructions</h2>
-                    <ol class="instructions">
-                        <li v-for="step in currentInstructions">{{ step }}</li>
-                    </ol>
-                </div>
-            </div>
             <div class="flippy-flip">
                 <button v-on:click="doFlippyThing">
                     <span v-if="cardIsFlippyFlipped">
@@ -286,6 +274,18 @@
                 <span class="hover-to-see">
                     Hover to see your instructions :)
                 </span>
+            </div>
+            <div class="card-container" v-bind:class="{'is-flipped': cardIsFlippyFlipped}">
+                <div class="card-flip-trigger"></div>
+                <div class="card card-front">
+                    <h1 class="card-name">{{ guests[currentPerson].name }}</h1>
+                </div>
+                <div class="card card-back">
+                    <h2 class="card-title">Your Instructions</h2>
+                    <ol class="instructions">
+                        <li v-for="step in currentInstructions">{{ step }}</li>
+                    </ol>
+                </div>
             </div>
         </div>
         <script>
