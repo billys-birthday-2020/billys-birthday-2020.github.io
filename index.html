@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Birthday Instructions</title>
+        <link href="https://fonts.googleapis.com/css2?family=Delius&family=Sacramento&display=swap" rel="stylesheet">
+        <script src="https://unpkg.com/vue"></script>
+        <style>
+            *, *::after, *::before {
+                box-sizing: border-box;
+            }
+            html, body {
+                margin: 0;
+                min-height: 100vh;
+                padding: 0;
+            }
+            body {
+                background: #E8ECF7;
+                /* background: red; */
+                color: #292E3B;
+                font-family: "Delius", sans-serif;
+                overflow-x: hidden;
+            }
+            #main {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
+            h1, h2 {
+                margin-top: 0;
+            }
+            h1 {
+                font-family: "Sacramento", serif;
+                font-weight: 400;
+            }
+            ul, ol{
+                margin: 0;
+                padding: 0 0 0 1em;
+            }
+            li, p, label {
+                font-size: 1.125em;
+            }
+            button {
+                align-items: center;
+                background: #3A63D2;
+                border: 0;
+                border-radius: 0.25em;
+                color: #FFF;
+                cursor: pointer;
+                display: inline-flex;
+                font-family: inherit;
+                font-size: inherit;
+                justify-content: center;
+                outline: 0;
+                padding: 0.675em 1.25em;
+                transition: all 200ms ease;
+            }
+            button:hover,
+            button:focus {
+                background: #5278E0
+            }
+            button:disabled {
+                opacity: 0.5;
+            }
+            button svg {
+                fill: none;
+                stroke: currentColor;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                stroke-width: 2;
+                width: 1.25rem;
+            }
+            .arrow-left {
+                margin-right: 1rem;
+            }
+            .arrow-right {
+                margin-left: 1rem;
+            }
+            hr {
+                background: rgba(16, 29, 65, 0.25);
+                border: 0;
+                height: 1px;
+                margin: 1.25em 0;
+                outline: 0;
+            }
+            .person-picker {
+                background: #FFF;
+                font-size: 0.875rem;
+                height: 100vh;
+                left: 0;
+                overflow-y: auto;
+                padding: 2em;
+                position: fixed;
+                top: 0;
+                transition: all 800ms cubic-bezier(0.8, 0, 0.2, 1);
+                width: 100%;
+                z-index: 2;
+            }
+            .person-picker.modal-hidden {
+                opacity: 0;
+                pointer-events: none;
+                transform: scale(0.8);
+                visibility: hidden;
+            }
+            .guest-list-item {
+                cursor: pointer;
+                display: block;
+            }
+            .guest-list-item:not(:last-child) {
+                margin-bottom: 0.75em;
+            }
+            input[type="radio"]:checked + span {
+                color: #3A63D2;
+            }
+            .card-container {
+                align-items: center;
+                display: flex;
+                flex: 1 1 auto;
+                height: 100%;
+                justify-content: center;
+                padding: 1em 1em 30em;
+                perspective: 90em;
+                position: relative;
+            }
+            .card {
+                background: #FFF;
+                -webkit-backface-visibility: hidden;
+                backface-visibility: hidden;
+                border-radius: 0.675em;
+                box-shadow: 0 0.5em 1.25em rgba(16, 29, 65, 0.2);
+                height: 30em;
+                left: 50%;
+                max-width: 95%;
+                padding: 2em;
+                position: absolute;
+                top: 50%;
+                transform-style: preserve-3d;
+                transition: all 700ms ease;
+                width: 36em;
+            }
+            .card-front {
+                align-items: center;
+                background: #FFCCCC;
+                /* CHNAGE THIS FOR BACKGROUND THING */
+                background-image: url('https://i.imgur.com/iAv6r91.jpg');
+                background-size: cover;
+                background-position: center center;
+                /* THIS CHANGES THE TEXT COLOR */
+                color: white;
+                display: flex;
+                justify-content: center;
+                transform: translate(-50%, -50%) rotate3d(0, 1, 0, 0deg);
+            }
+            .card-container.is-flipped .card-front {
+                transform: translate(-50%, -50%) rotate3d(0, 1, 0, -180deg);
+            }
+            .card-back {
+                display: flex;
+                flex-direction: column;
+                font-size: 0.875rem;
+                transform: translate(-50%, -50%) rotate3d(0, 1, 0, 180deg);
+            }
+            .card-container.is-flipped .card-back {
+                transform: translate(-50%, -50%) rotate3d(0, 1, 0, 0deg);
+            }
+            .card-name {
+                font-size: 3em;
+                line-height: 1.2;
+                margin: 0;
+                text-align: center;
+            }
+            .card-title {
+                border-bottom: 1px solid rgba(16, 29, 65, 0.25);
+                flex: 0 0 auto;
+                font-weight: 400;
+                margin: 0;
+                padding: 0 0 0.5em;
+            }
+            .instructions {
+                border-bottom: 1px solid rgba(16, 29, 65, 0.25);
+                flex: 1 1 auto;
+                overflow-y: auto;
+                padding: 1em 0 1em 1.75em;
+            }
+            .instructions li {
+                padding-left: 0.5em;
+                margin-bottom: 1em;
+            }
+            .flippy-flip {
+                flex: 0 0 auto;
+                text-align: center;
+            }
+            .hover-to-see {
+                display: none;
+            }
+            @media screen and (min-width: 24rem) {
+                .card-container {
+                    padding: 1em 1em 24em;
+                }
+                .card {
+                    height: 24em;
+                }
+                .card-back,
+                .person-picker {
+                    font-size: 1rem;
+                }
+                .card-container:hover .card-front {
+                    transform: translate(-50%, -50%) rotate3d(0, 1, 0, -180deg);
+                }
+                .card-container.is-flipped:hover .card-front,
+                .card-container:hover .card-back {
+                    transform: translate(-50%, -50%) rotate3d(0, 1, 0, 0deg);
+                }
+                .card-container.is-flipped:hover .card-back {
+                    transform: translate(-50%, -50%) rotate3d(0, 1, 0, 180deg);
+                }
+                .flippy-flip button {
+                    display: none;
+                }
+                .hover-to-see {
+                    display: block;
+                    padding-bottom: 1rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div id="main">
+            <div class="person-picker" :class="{'modal-hidden': modalHidden}">
+                <h2>Who are you?</h2>
+                <p>Please pick your name from the list below:</p>
+                <label class="guest-list-item" v-for="(person, index) in guests">
+                    <input v-model="currentPerson" :value="index" name="guestPicker" type="radio">
+                    <span>{{ person.name }}</span>
+                </label>
+                <hr />
+                <button v-on:click="showInstructions" :disabled="personIsEmpty">Continue</button>
+            </div>
+            <div class="card-container" v-bind:class="{'is-flipped': cardIsFlippyFlipped}">
+                <div class="card card-front">
+                    <h1 class="card-name">{{ guests[currentPerson].name }}</h1>
+                </div>
+                <div class="card card-back">
+                    <h2 class="card-title">Your Instructions</h2>
+                    <ol class="instructions">
+                        <li v-for="step in currentInstructions">{{ step }}</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="flippy-flip">
+                <button v-on:click="doFlippyThing">
+                    <span v-if="cardIsFlippyFlipped">
+                        <svg class="arrow-left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 10">
+                            <line x1="1" y1="5" x2="15" y2="5" />
+                            <line x1="5" y1="9" x2="1" y2="5" />
+                            <line x1="5" y1="1" x2="1" y2="5" />
+                        </svg>
+                        Front
+                    </span>
+                    <span v-else>
+                        See your instructions
+                        <svg class="arrow-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 10">
+                            <line x1="1" y1="5" x2="15" y2="5" />
+                            <line x1="11" y1="9" x2="15" y2="5" />
+                            <line x1="11" y1="1" x2="15" y2="5" />
+                        </svg>
+                    </span>
+                </button>
+                <span class="hover-to-see">
+                    Hover to see your instructions :)
+                </span>
+            </div>
+        </div>
+        <script>
+            var main = new Vue({
+                el: '#main',
+                data: {
+                    currentPerson: 0,
+                    currentInstructions: [
+                        "Step number 1 (for the money)",
+                        "Step two (for the show)",
+                        "Step numero tres",
+                        "And this one's number 4",
+                        "#5",
+                        "Roman numeral VI",
+                        "Lucky step 7",
+                        "Step 8, don't hate...",
+                        "Step number 9 = u fine"
+                    ],
+                    guests: [
+                        {
+                            name: "John Doe",
+                            instructions: [
+                                "John's first step goes here.",
+                                "2nd step here.",
+                                "Etc..."
+                            ]
+                        },
+                        {
+                            name: "Jane Smith",
+                            instructions: [
+                                "Jane's first step goes here.",
+                                "2nd step here.",
+                                "Etc..."
+                            ]
+                        },
+                        {name:"LuluBird",
+                        instructions: [
+                            "LULU WANT PERCH",
+                        "NANCYFANCY",
+                        ]
+                            
+                        }
+                    ],
+                    modalHidden: false,
+                    cardIsFlippyFlipped: false
+                },
+                computed: {
+                    personIsEmpty() {
+                        if (this.currentPerson === '') {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                },
+                methods: {
+                    showInstructions() {
+                        this.modalHidden = true;
+                        this.currentInstructions = this.guests[this.currentPerson].instructions;
+                    },
+                    doFlippyThing() {
+                        this.cardIsFlippyFlipped = !this.cardIsFlippyFlipped;
+                    }
+                }
+            })
+        </script>
+    </body>
+</html>
